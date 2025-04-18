@@ -4,8 +4,8 @@ from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
 # Load from environment variables
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-KOBOLD_API = os.getenv("KOBOLD_API")
+BOT_TOKEN = 7185989596:AAH-nbPS0DZV64eGI7563CQOi8nYiXwmNxk
+KOBOLD_API = https://treasury-revision-titten-usually.trycloudflare.com/api/v1/generate
 IMAGE_API = "https://1yjs1yldj7.execute-api.us-east-1.amazonaws.com/default/ai_image?prompt={prompt}&aspect_ratio=16:9"
 
 # User preferences
