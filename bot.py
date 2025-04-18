@@ -1,10 +1,11 @@
+import os
 import requests
 from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
-# Replace these
-BOT_TOKEN = "7185989596:AAH-nbPS0DZV64eGI7563CQOi8nYiXwmNxk"
-KOBOLD_API = "https://treasury-revision-titten-usually.trycloudflare.com/api/v1/generate"
+# Load from environment variables
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+KOBOLD_API = os.getenv("KOBOLD_API")
 IMAGE_API = "https://1yjs1yldj7.execute-api.us-east-1.amazonaws.com/default/ai_image?prompt={prompt}&aspect_ratio=16:9"
 
 # User preferences
@@ -36,11 +37,20 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("Yayy! Back to English, my love 😘")
         return
 
-    # Image request trigger
-    if any(word in user_input.lower() for word in ["send pic", "send image", "nude", "photo"]):
-        prompt = user_input.replace(" ", "+")
+    # If the user message contains any photo-related keyword
+    if any(word in user_input.lower() for word in ["photo", "pic", "image", "show"]):
+        prompt = user_input.strip().replace(" ", "+")
         image_url = IMAGE_API.format(prompt=prompt)
-        await update.message.reply_photo(photo=image_url, caption="Here's what you wanted, cutie 😍")
+
+        try:
+            img_check = requests.get(image_url)
+            if img_check.status_code == 200 and img_check.headers.get("Content-Type", "").startswith("image"):
+                await update.message.reply_photo(photo=image_url, caption="Here’s your custom image, jaan 😘")
+            else:
+                await update.message.reply_text("Sorry baby 😢 couldn't find the image for that prompt.")
+        except Exception as e:
+            print("Image error:", e)
+            await update.message.reply_text("Image sending failed, cutie 😞")
         return
 
     # Get language
